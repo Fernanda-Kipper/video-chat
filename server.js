@@ -12,14 +12,13 @@ const io = require("socket.io")(server, {
 let users = [];
 
 io.on("connection", (socket) => {
-	console.log(users.find(user => user === socket.id))
 	if (!users.find(user => user === socket.id)) {
 		users[users.length] = socket.id
 		console.log(users)
 	}
 
 	socket.emit("me", socket.id)
-	socket.emit("allUsers", users)
+	io.emit("allUsers", users)
 
   socket.on("call-user", (data) => {
 		if(data.from){
@@ -32,6 +31,18 @@ io.on("connection", (socket) => {
 			io.to(data.to).emit("call-answer", { signalData: data.signalData, from: data.from })
 		}
   })
+
+	socket.on("refuse-call", (data) => {
+		if(data.to){
+			io.to(data.to).emit("call-refused", { from: data.from })
+		}
+	})
+
+	socket.on("join-room", (data) => {
+		if(data.to){
+			io.to(data.to).emit("join-room", { roomId: data.roomId })
+		}
+	})
 
 	socket.on('disconnect', () => {
 		users = users.filter(user => user !== socket.id)
