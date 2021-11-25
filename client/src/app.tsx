@@ -1,14 +1,17 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
-import Meet from "./pages/meet";
+import { ChakraProvider } from "@chakra-ui/react"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { StoreProvider } from "./contexts/store-context";
+import Router from "./router";
 
 export default function App(){
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/meet" element={<Meet/>} />
-      </Routes>
-    </BrowserRouter>
+    <ChakraProvider>
+      <StoreProvider>
+        <Router/>
+        <ToastContainer/>
+      </StoreProvider>
+    </ChakraProvider>
   )
 }
