@@ -4,7 +4,7 @@
   "description": "live video chat",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js"
   },
   "author": "Fernanda Kipper",
   "license": "MIT",
@@ -13,5 +13,8 @@
     "express": "^4.17.1",
     "nodemon": "^2.0.14",
     "socket.io": "^4.3.1"
+  },
+  "devDependencies": {
+    "@types/simple-peer": "^9.11.3"
   }
 }
