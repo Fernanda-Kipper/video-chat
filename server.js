@@ -14,7 +14,6 @@ let users = [];
 io.on("connection", (socket) => {
 	if (!users.find(user => user === socket.id)) {
 		users[users.length] = socket.id
-		console.log(users)
 	}
 
 	socket.emit("me", socket.id)
@@ -41,6 +40,12 @@ io.on("connection", (socket) => {
 	socket.on("join-room", (data) => {
 		if(data.to){
 			io.to(data.to).emit("join-room", { roomId: data.roomId })
+		}
+	})
+
+	socket.on('hang-up', (data) => {
+		if(data.from){
+			io.emit("hanging-up", { from: data.from })
 		}
 	})
 
