@@ -40,7 +40,7 @@ const Home = observer(() => {
     peer.on("stream", stream => {
       currentCall.setStream(stream)
       peer.on('close', () => navigate('/'))
-      currentCall.createConnection(peer, '', id)
+      currentCall.createConnection('', id)
 
       const roomId = v4();
       socketRef.current?.emit("join-room", { roomId: roomId, to: id })
@@ -62,7 +62,6 @@ const Home = observer(() => {
 
   const answerCall = () => {
     if(!callerData?.signalData || !callerData?.from) return 
-    console.log(currentCall.myStream)
     const peer = new Peer({ initiator: false, trickle: false, stream: currentCall.myStream })
 
     peer.on("signal", data => {
@@ -79,7 +78,7 @@ const Home = observer(() => {
 
     socketRef.current?.on("join-room", (data) => {
       peer.on('close', () => navigate('/'))
-      currentCall.createConnection(peer, '', callerData.from ?? '')
+      currentCall.createConnection('', callerData.from ?? '')
       navigate(`/meet?id=${data.roomId}`)
     })
   }
