@@ -1,19 +1,22 @@
-import { Box } from '@chakra-ui/react'
 import React, { useEffect, useRef } from 'react'
+import { Box } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
 import { Page } from '../components/page';
 import { useStore } from '../hooks/use-store';
 import { ImPhoneHangUp } from 'react-icons/im'
+import { io, Socket } from 'socket.io-client';
 
 export default function Meet(){
   const navigate = useNavigate()
   const myVideoRef = useRef<any>()
   const otherUserRef = useRef<any>()
-  const { currentCall } = useStore()
+  const socketRef = useRef<Socket>()
+  const { currentCall, userId } = useStore()
 
   const handleHangUp = () => {
     currentCall.reset()
-    currentCall.peer?.destroy()
+    socketRef.current?.emit("hang-up", { to: currentCall.userId, from: userId })
+    socketRef.current?.disconnect()
 
     navigate('/')
   }
@@ -25,6 +28,15 @@ export default function Meet(){
   }, [currentCall])
 
   useEffect(() => {
+    socketRef.current = io("http://localhost:8000");
+
+    socketRef.current.on("hanging-up", (data) => {
+      if(data.from === currentCall.userId){
+        currentCall.reset()
+        navigate('/') 
+      }
+    })
+  
     return () => handleHangUp()
   }, [])
 
